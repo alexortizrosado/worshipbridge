@@ -40,6 +40,7 @@
     "reset": "npm run clean && rm -rf node_modules && npm run clean:components && npm run install:all"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "typescript": "^5.3.3"
   }
 } 

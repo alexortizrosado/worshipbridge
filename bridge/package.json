@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "tsc -w",
-    "build": "tsc",
+    "build": "node ../node_modules/.bin/tsc",
     "build:upload": "ts-node scripts/build-and-upload.ts",
     "clean": "rimraf dist",
     "lint": "eslint src --ext .ts",
