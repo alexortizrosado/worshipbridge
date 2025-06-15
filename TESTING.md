@@ -8,7 +8,7 @@ This guide walks you through testing the WorshipBridge stack locally, including 
 - Docker and Docker Compose
 - ProPresenter installed and running locally
 
-## Step 1: Build the Bridge App
+## Step 1: Build and Run the Bridge App
 
 1. Navigate to the `bridge` directory:
    ```sh
@@ -30,7 +30,14 @@ This guide walks you through testing the WorshipBridge stack locally, including 
    npm start
    ```
 
-   The Bridge App should now be running locally.
+   The Bridge App will:
+   - Start and appear in your system tray
+   - Show a tray icon that you can click to show/hide the main window
+   - Right-click the tray icon to access the menu with options:
+     - Show Dashboard
+     - Check for Updates
+     - Settings
+     - Quit
 
 ## Step 2: Start Docker Services
 
@@ -76,9 +83,9 @@ This guide walks you through testing the WorshipBridge stack locally, including 
    ```
 
 3. Restart the Bridge App to apply the changes:
-   ```sh
-   npm start
-   ```
+   - Click the tray icon to show the main window
+   - Use the menu to quit the app
+   - Start it again with `npm start`
 
 ## Step 4: Test the Connection
 
@@ -91,19 +98,44 @@ This guide walks you through testing the WorshipBridge stack locally, including 
    - You should receive a successful response.
 
 3. **Test the Bridge App**:
-   - Check the Bridge App's logs to ensure it is successfully polling the SQS queue.
+   - Check the Bridge App's logs in the main window to ensure it is successfully polling the SQS queue.
    - You should see logs indicating that it is connected to the queue and processing commands.
+   - The tray icon should indicate a healthy connection status.
 
 4. **Test Command Flow**:
    - Use the Web App to enqueue a command (e.g., create a playlist).
    - Check the Bridge App's logs to see if it receives and processes the command.
    - Verify that ProPresenter receives the command and executes it.
 
+## Building an Installable Package
+
+To create an installable package for the Bridge App:
+
+1. For all platforms:
+   ```sh
+   npm run package
+   ```
+
+2. For macOS only:
+   ```sh
+   npm run package:mac
+   ```
+
+3. For Windows only:
+   ```sh
+   npm run package:win
+   ```
+
+The packaged applications will be created in the `bridge/dist` directory:
+- macOS: `.dmg` and `.zip` files
+- Windows: `.exe` installer
+
 ## Troubleshooting
 
 - **Bridge App Not Connecting to SQS**:
   - Ensure LocalStack is running and the SQS queue is created.
-  - Check the Bridge App's logs for connection errors.
+  - Check the Bridge App's logs in the main window for connection errors.
+  - Verify the configuration in `config/index.ts`.
 
 - **Docker Services Not Starting**:
   - Check Docker logs for errors.

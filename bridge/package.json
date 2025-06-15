@@ -10,7 +10,10 @@
     "build:upload": "ts-node scripts/build-and-upload.ts",
     "clean": "npx rimraf dist",
     "lint": "eslint src --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "package": "npm run build && electron-builder build --mac --win --publish never",
+    "package:mac": "npm run build && electron-builder build --mac --publish never",
+    "package:win": "npm run build && electron-builder build --win --publish never"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.828.0",
