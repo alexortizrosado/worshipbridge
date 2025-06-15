@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery, useMutation } from 'react-query';
 import { useDropzone } from 'react-dropzone';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import Image from 'next/image';
 import axios from 'axios';
 
 interface Slide {
@@ -181,11 +182,14 @@ export default function Home() {
                         </div>
                       ) : (
                         <div className="flex-1">
-                          <img
-                            src={item.url}
-                            alt="Media"
-                            className="h-32 w-32 object-cover rounded-lg"
-                          />
+                          <div className="relative h-32 w-32">
+                            <Image
+                              src={item.url}
+                              alt="Media"
+                              fill
+                              className="object-cover rounded-lg"
+                            />
+                          </div>
                         </div>
                       )}
                       <button
