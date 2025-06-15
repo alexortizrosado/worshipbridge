@@ -1,14 +1,15 @@
 {
   "name": "@worshipbridge/cloud",
   "version": "1.0.0",
+  "private": true,
   "description": "Cloud backend for WorshipBridge",
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
-    "clean": "rimraf dist",
-    "lint": "eslint src --ext .ts",
+    "clean": "rm -rf dist node_modules",
+    "lint": "eslint . --ext .ts",
     "test": "jest",
     "docker:build": "docker build -t worshipbridge-cloud .",
     "docker:run": "docker run -p 3000:3000 worshipbridge-cloud"
@@ -17,10 +18,13 @@
     "@aws-sdk/client-cognito-identity-provider": "^3.525.0",
     "@aws-sdk/client-s3": "^3.525.0",
     "@aws-sdk/client-sqs": "^3.525.0",
+    "@types/express-fileupload": "^1.5.1",
     "@worshipbridge/shared": "file:../shared",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
+    "express-fileupload": "^1.5.1",
+    "express-validator": "^6.14.0",
     "helmet": "^7.1.0",
     "winston": "^3.11.0"
   },
@@ -38,4 +42,4 @@
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }
-} 
+}

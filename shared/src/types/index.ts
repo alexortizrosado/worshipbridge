@@ -1,44 +1,53 @@
 // Common types used across the application
 
+// User Types
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'user';
+  role: UserRole;
   createdAt: string;
   updatedAt: string;
 }
 
+export type UserRole = 'admin' | 'user';
+
+// Playlist Types
 export interface Playlist {
   id: string;
   name: string;
   description?: string;
   items: PlaylistItem[];
+  createdBy: string;
   createdAt: string;
   updatedAt: string;
-  createdBy: string;
 }
 
 export interface PlaylistItem {
   id: string;
-  type: 'media' | 'presentation';
-  name: string;
-  path: string;
-  duration?: number;
+  type: 'media' | 'command';
+  mediaId?: string;
+  command?: Command;
   order: number;
+  duration?: number;
 }
 
+// Media Types
 export interface MediaFile {
   id: string;
   name: string;
-  type: string;
+  type: MediaType;
   size: number;
-  path: string;
+  url: string;
+  thumbnailUrl?: string;
+  duration?: number;
   uploadedBy: string;
   uploadedAt: string;
-  metadata?: Record<string, unknown>;
 }
 
+export type MediaType = 'image' | 'video' | 'audio' | 'document';
+
+// Command Types
 export interface Command {
   id: string;
   type: CommandType;
@@ -50,11 +59,13 @@ export interface Command {
 }
 
 export type CommandType = 
-  | 'LOAD_PLAYLIST'
   | 'PLAY_MEDIA'
   | 'STOP_MEDIA'
-  | 'NEXT_ITEM'
-  | 'PREVIOUS_ITEM'
+  | 'NEXT_SLIDE'
+  | 'PREVIOUS_SLIDE'
+  | 'GO_TO_SLIDE'
+  | 'CLEAR_PLAYLIST'
+  | 'LOAD_PLAYLIST'
   | 'UPDATE_SETTINGS';
 
 export type CommandStatus = 
@@ -63,6 +74,7 @@ export type CommandStatus =
   | 'COMPLETED'
   | 'FAILED';
 
+// Bridge Configuration
 export interface BridgeConfig {
   apiKey: string;
   userId: string;
@@ -72,21 +84,53 @@ export interface BridgeConfig {
   autoStart: boolean;
 }
 
+// Update Information
 export interface UpdateInfo {
   version: string;
   releaseDate: string;
+  releaseNotes: string;
   downloadUrl: string;
   checksum: string;
-  platform: 'darwin' | 'win32';
-  releaseNotes?: string;
 }
 
-export interface ApiResponse<T> {
+// API Response
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: {
     code: string;
     message: string;
     details?: unknown;
+  };
+  meta?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+  };
+}
+
+// Error Types
+export interface ApiError extends Error {
+  code: string;
+  status: number;
+  details?: unknown;
+}
+
+// Validation Types
+export interface ValidationError {
+  field: string;
+  message: string;
+  code: string;
+}
+
+// Platform Types
+export type Platform = 'mac' | 'win' | 'linux';
+
+export interface PlatformConfig {
+  platform: Platform;
+  isSupported: boolean;
+  requirements?: {
+    minVersion?: string;
+    architecture?: string[];
   };
 } 

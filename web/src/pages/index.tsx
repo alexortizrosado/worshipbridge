@@ -34,7 +34,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append('media', file);
       
-      const response = await axios.post('/api/upload-media', formData, {
+      const response = await axios.post<{ url: string }>('/api/upload-media', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

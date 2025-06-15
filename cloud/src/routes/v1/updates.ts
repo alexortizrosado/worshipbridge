@@ -1,13 +1,14 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { logger } from '../../utils/logger';
 import { authenticateToken } from '../../middleware/auth';
+import { Readable } from 'stream';
 
 const router = Router();
 const s3Client = new S3Client({ region: process.env.AWS_REGION });
 
 // Get latest version info
-router.get('/latest', async (req, res) => {
+router.get('/latest', async (req: Request, res: Response) => {
   try {
     const platform = req.query.platform as string;
     if (!platform || !['darwin', 'win32'].includes(platform)) {
@@ -30,7 +31,7 @@ router.get('/latest', async (req, res) => {
 });
 
 // Get update file
-router.get('/download/:platform/:version', async (req, res) => {
+router.get('/download/:platform/:version', async (req: Request, res: Response) => {
   try {
     const { platform, version } = req.params;
     if (!platform || !version || !['darwin', 'win32'].includes(platform)) {
@@ -49,7 +50,11 @@ router.get('/download/:platform/:version', async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename=update-${version}`);
     
     // Stream the file
-    response.Body?.pipe(res);
+    if (response.Body instanceof Readable) {
+      response.Body.pipe(res);
+    } else {
+      throw new Error('Response body is not a readable stream');
+    }
   } catch (error) {
     logger.error('Error downloading update:', error);
     res.status(500).json({ error: 'Failed to download update' });

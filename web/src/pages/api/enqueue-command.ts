@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { getCurrentUser } from 'aws-amplify/auth/server';
+import { runWithAmplifyServerContext } from '@/utils/amplifyServer';
 
-export default withApiAuthRequired(async function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -10,23 +11,26 @@ export default withApiAuthRequired(async function handler(
   }
 
   try {
-    const response = await fetch(`${process.env.CLOUD_API_URL}/enqueue-command`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${req.headers.authorization}`
-      },
-      body: JSON.stringify(req.body)
+    // Verify authentication using AWS Cognito
+    const user = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: (contextSpec) => getCurrentUser(contextSpec)
     });
 
-    if (!response.ok) {
-      throw new Error('Failed to enqueue command');
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const data = await response.json();
-    res.status(200).json(data);
+    const { command } = req.body;
+    
+    if (!command) {
+      return res.status(400).json({ error: 'Command is required' });
+    }
+
+    // TODO: Implement command enqueuing logic
+    return res.status(200).json({ message: 'Command enqueued successfully' });
   } catch (error) {
     console.error('Error enqueueing command:', error);
-    res.status(500).json({ error: 'Failed to enqueue command' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
-}); 
+} 

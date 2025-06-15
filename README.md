@@ -44,10 +44,18 @@ worshipbridge/
    npm run dev
 
    # Or start components individually
-   npm run dev:bridge
-   npm run dev:cloud
-   npm run dev:web
+   npm run dev:bridge    # Runs on port 3002
+   npm run dev:cloud     # Runs on port 3001
+   npm run dev:web       # Runs on port 3000
    ```
+
+## Service Ports
+
+When running in development mode, the services use the following ports:
+- Web Dashboard: `http://localhost:3000`
+- Cloud Backend: `http://localhost:3001`
+- Bridge Server: `http://localhost:3002`
+- ProPresenter WebSocket: `ws://localhost:5000`
 
 ## Available Scripts
 
@@ -69,9 +77,9 @@ worshipbridge/
 
 ### Development
 - `npm run dev` - Start all components in development mode
-- `npm run dev:bridge` - Start bridge in development mode
-- `npm run dev:cloud` - Start cloud in development mode
-- `npm run dev:web` - Start web in development mode
+- `npm run dev:bridge` - Start bridge in development mode (port 3002)
+- `npm run dev:cloud` - Start cloud in development mode (port 3001)
+- `npm run dev:web` - Start web in development mode (port 3000)
 
 ### Testing
 - `npm run test` - Run tests for all components
