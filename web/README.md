@@ -14,6 +14,7 @@ The web dashboard for managing ProPresenter playlists and media remotely.
 
 - Node.js 18+
 - npm or yarn
+- AWS Account
 
 ## Setup
 
@@ -91,24 +92,48 @@ web/
 
 ## Deployment
 
-1. Build the application:
+### AWS Amplify Deployment
+
+1. Install the AWS Amplify CLI:
    ```bash
-   npm run build
+   npm install -g @aws-amplify/cli
    ```
 
-2. Deploy to your hosting provider:
+2. Configure Amplify:
    ```bash
-   # Configure your deployment method (e.g., Vercel, Netlify, etc.)
+   amplify configure
    ```
 
-## Environment Variables
+3. Initialize Amplify in your project:
+   ```bash
+   amplify init
+   ```
 
-Required environment variables:
+4. Add hosting:
+   ```bash
+   amplify add hosting
+   ```
+
+5. Push the changes:
+   ```bash
+   amplify push
+   ```
+
+6. Deploy:
+   ```bash
+   amplify publish
+   ```
+
+### Environment Variables
+
+Required environment variables for AWS Amplify:
 
 ```env
-NEXT_PUBLIC_AUTH0_DOMAIN=your-auth0-domain
-NEXT_PUBLIC_AUTH0_CLIENT_ID=your-auth0-client-id
-NEXT_PUBLIC_API_URL=your-api-url
+AWS_REGION=us-east-1
+COGNITO_USER_POOL_ID=your-user-pool-id
+COGNITO_CLIENT_ID=your-client-id
+API_URL=your-api-url
+S3_BUCKET_NAME=your-bucket-name
 ```
 
 ## Contributing
