@@ -6,6 +6,7 @@ import { CognitoIdentityProviderClient, InitiateAuthCommand } from '@aws-sdk/cli
 import { logger } from '../../utils/logger';
 import { authenticateToken } from '../../middleware/auth';
 import fileUpload from 'express-fileupload';
+import { v4 as uuidv4 } from 'uuid';
 
 // Extend Express Request type to include user and files
 declare global {
@@ -79,9 +80,14 @@ router.post('/commands', authenticateToken, [
       timestamp: new Date().toISOString()
     };
 
+    const messageId = uuidv4();
+    const messageGroupId = `${userId}-${type}`;
+
     const sqsCommand = new SendMessageCommand({
       QueueUrl: process.env.SQS_QUEUE_URL,
-      MessageBody: JSON.stringify(message)
+      MessageBody: JSON.stringify(message),
+      MessageGroupId: messageGroupId,
+      MessageDeduplicationId: messageId
     });
 
     await sqsClient.send(sqsCommand);

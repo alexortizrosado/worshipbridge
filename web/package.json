@@ -14,9 +14,11 @@
   "dependencies": {
     "@aws-amplify/adapter-nextjs": "^1.6.3",
     "@aws-amplify/ui-react": "^6.0.0",
+    "@aws-sdk/client-sqs": "^3.828.0",
     "@heroicons/react": "^2.2.0",
     "@types/axios": "^0.9.36",
     "@types/react-dropzone": "^4.2.2",
+    "@types/uuid": "^10.0.0",
     "@worshipbridge/shared": "file:../shared",
     "aws-amplify": "^6.13.1",
     "axios": "^1.10.0",
@@ -25,7 +27,8 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.8",
     "react-query": "^3.39.3",
-    "swr": "^2.2.4"
+    "swr": "^2.2.4",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",

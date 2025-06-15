@@ -72,7 +72,7 @@ const config: CloudConfig = {
   },
   sqs: {
     client: new SQSClient(sqsConfig),
-    queueUrl: process.env.SQS_QUEUE_URL || 'worshipbridge-commands',
+    queueUrl: process.env.SQS_QUEUE_URL || 'worshipbridge-commands.fifo',
   },
   cognito: {
     client: new CognitoIdentityProviderClient(cognitoConfig),
