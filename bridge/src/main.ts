@@ -5,6 +5,15 @@ import { logger } from './utils/logger';
 import { startServer } from './server';
 import { store } from './utils/store';
 
+// Extend the App interface to include isQuitting
+declare global {
+  namespace Electron {
+    interface App {
+      isQuitting: boolean;
+    }
+  }
+}
+
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let server: any = null;

@@ -1,13 +1,5 @@
 import Store from 'electron-store';
-
-interface BridgeConfig {
-  apiKey: string;
-  userId: string;
-  cloudApiUrl: string;
-  propresenterPort: number;
-  pollingInterval: number;
-  autoStart: boolean;
-}
+import { BridgeConfig } from '@worshipbridge/shared';
 
 const defaultConfig: BridgeConfig = {
   apiKey: '',

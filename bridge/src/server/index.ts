@@ -6,6 +6,17 @@ import { logger } from '../utils/logger';
 let propresenterWs: WebSocket | null = null;
 let pollingInterval: NodeJS.Timeout | null = null;
 
+interface ProPresenterCommand {
+  id: string;
+  type: string;
+  payload: any;
+  // Add other fields as needed
+}
+
+interface ProPresenterCommandResponse {
+  commands: ProPresenterCommand[];
+}
+
 export async function startServer() {
   const config = getConfig();
   
@@ -60,7 +71,7 @@ function startPolling() {
   
   pollingInterval = setInterval(async () => {
     try {
-      const response = await axios.get(`${config.cloudApiUrl}/queue-status`, {
+      const response = await axios.get<ProPresenterCommandResponse>(`${config.cloudApiUrl}/queue-status`, {
         headers: {
           'Authorization': `Bearer ${config.apiKey}`
         }
@@ -77,7 +88,7 @@ function startPolling() {
   }, config.pollingInterval || 5000);
 }
 
-async function processCommand(command: any) {
+async function processCommand(command: ProPresenterCommand) {
   if (!propresenterWs || propresenterWs.readyState !== WebSocket.OPEN) {
     throw new Error('ProPresenter WebSocket not connected');
   }
@@ -100,45 +111,45 @@ async function processCommand(command: any) {
   }
 }
 
-async function createPlaylist(command: any) {
+async function createPlaylist(command: ProPresenterCommand) {
   // Send WebSocket message to ProPresenter to create playlist
   propresenterWs?.send(JSON.stringify({
     action: 'createPlaylist',
-    name: command.playlistName
+    name: command.payload.playlistName
   }));
 }
 
-async function addSlide(command: any) {
+async function addSlide(command: ProPresenterCommand) {
   propresenterWs?.send(JSON.stringify({
     action: 'addSlide',
-    playlist: command.playlistName,
-    title: command.title,
-    lines: command.lines,
-    template: command.template
+    playlist: command.payload.playlistName,
+    title: command.payload.title,
+    lines: command.payload.lines,
+    template: command.payload.template
   }));
 }
 
-async function addMedia(command: any) {
+async function addMedia(command: ProPresenterCommand) {
   // Download media from S3
-  const response = await axios.get(command.url, {
+  const response = await axios.get(command.payload.url, {
     responseType: 'arraybuffer'
   });
   
   // Save to local temp directory
-  const tempPath = `/tmp/${command.filename}`;
+  const tempPath = `/tmp/${command.payload.filename}`;
   require('fs').writeFileSync(tempPath, response.data);
   
   // Add to ProPresenter
   propresenterWs?.send(JSON.stringify({
     action: 'addMedia',
-    playlist: command.playlistName,
+    playlist: command.payload.playlistName,
     path: tempPath
   }));
 }
 
-async function triggerPresentation(command: any) {
+async function triggerPresentation(command: ProPresenterCommand) {
   propresenterWs?.send(JSON.stringify({
     action: 'triggerPresentation',
-    playlist: command.playlistName
+    playlist: command.payload.playlistName
   }));
 } 
