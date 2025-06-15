@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  web:
+    build: ./web
+    ports:
+      - "0.0.0.0:3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://cloud:4000
+    depends_on:
+      - cloud
+
+  cloud:
+    build: ./cloud
+    ports:
+      - "0.0.0.0:4000:4000"
+    environment:
+      - AWS_REGION=us-east-1
+      - SQS_QUEUE_URL=http://localstack:4566/000000000000/worshipbridge-commands.fifo
+    depends_on:
+      - localstack
+
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "0.0.0.0:4566:4566"
+    environment:
+      - SERVICES=sqs
+      - DEFAULT_REGION=us-east-1
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    volumes:
+      - ./localstack:/docker-entrypoint-initaws.d 

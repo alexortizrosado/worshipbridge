@@ -159,3 +159,59 @@ The `shared` directory contains common code used across all components. To ensur
 ## License
 
 MIT 
+
+## Architecture
+
+### Production Flow
+
+```mermaid
+graph TD
+    A[Web App] -->|Enqueues Commands| B[Cloud Service]
+    B -->|Stores Commands| C[AWS SQS Queue]
+    D[Bridge App] -->|Polls Commands| C
+    D -->|Sends Commands| E[ProPresenter]
+    F[Browser] -->|Accesses| A
+```
+
+### Development Flow
+
+```mermaid
+graph TD
+    A[Web App] -->|Enqueues Commands| B[Cloud Service]
+    B -->|Stores Commands| C[LocalStack SQS Queue]
+    D[Bridge App] -->|Polls Commands| C
+    D -->|Sends Commands| E[ProPresenter]
+    F[Browser] -->|Accesses| A
+    G[LocalStack] -->|Emulates AWS Services| C
+```
+
+### How It Works
+
+1. **Web App**:  
+   - Built with Next.js, serves the user interface.
+   - Enqueues commands (e.g., create playlist, add slide) to the Cloud Service.
+
+2. **Cloud Service**:  
+   - Handles business logic, authentication, and API endpoints.
+   - Stores commands in an SQS queue (or LocalStack in development).
+
+3. **SQS Queue**:  
+   - Reliably stores commands until they are processed.
+   - In production, uses AWS SQS. In development, emulated by LocalStack.
+
+4. **Bridge App**:  
+   - A local Electron app that polls the SQS queue for commands.
+   - **Does not enqueue commands**—it only processes commands from the queue and sends them to ProPresenter.
+
+5. **ProPresenter**:  
+   - Receives commands from the Bridge App and executes them (e.g., creating playlists, adding slides).
+
+6. **Local Development**:  
+   - LocalStack emulates AWS services (like SQS) for local testing.
+   - The Cloud Service and Bridge App connect to LocalStack instead of real AWS services.
+
+---
+
+## Getting Started
+
+[Your existing setup instructions here...] 
