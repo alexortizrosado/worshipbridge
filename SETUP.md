@@ -18,8 +18,15 @@ This guide will help you set up the WorshipBridge system for development and pro
 git clone https://github.com/yourusername/worshipbridge.git
 cd worshipbridge
 
-# Install dependencies for all components
+# Install root dependencies
 npm install
+
+# Install component dependencies
+cd bridge && npm install
+cd ../cloud && npm install
+cd ../web && npm install
+cd ../shared && npm install
+cd ..
 ```
 
 ### 2. Environment Configuration
@@ -89,13 +96,13 @@ npm run dev
 Or start individual components:
 ```bash
 # Bridge
-npm run dev --workspace=bridge
+cd bridge && npm run dev
 
 # Cloud
-npm run dev --workspace=cloud
+cd cloud && npm run dev
 
 # Web
-npm run dev --workspace=web
+cd web && npm run dev
 ```
 
 ## Production Setup
@@ -109,9 +116,9 @@ npm run build
 
 Or build individual components:
 ```bash
-npm run build --workspace=bridge
-npm run build --workspace=cloud
-npm run build --workspace=web
+cd bridge && npm run build
+cd ../cloud && npm run build
+cd ../web && npm run build
 ```
 
 ### 2. Bridge Configuration
@@ -159,7 +166,7 @@ npm run build --workspace=web
 
 ## Shared Package
 
-The shared package contains common code used across all components. It's automatically built and linked when you run `npm install` in the root directory.
+The shared package contains common code used across all components. It's installed as a local dependency in each component.
 
 To use shared code in a component:
 
@@ -185,7 +192,13 @@ import {
 
 2. **Dependency Issues**
    - Clear node_modules: `rm -rf node_modules`
-   - Reinstall: `npm install`
+   - Reinstall dependencies in each component:
+     ```bash
+     cd bridge && npm install
+     cd ../cloud && npm install
+     cd ../web && npm install
+     cd ../shared && npm install
+     ```
 
 3. **Environment Issues**
    - Verify all .env files are properly configured

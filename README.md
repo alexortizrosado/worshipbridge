@@ -1,120 +1,118 @@
 # WorshipBridge
 
-A secure system for remotely controlling ProPresenter 7 via a web dashboard.
+A comprehensive system for remote ProPresenter control, consisting of three main components:
+
+1. **Bridge (Local)**: An Electron-based tray app with a Node.js bridge server that connects to ProPresenter's WebSocket API
+2. **Cloud Backend**: An Express.js server integrated with AWS services
+3. **Web Dashboard**: A Next.js application for managing playlists and media
 
 ## Project Structure
 
-WorshipBridge is organized as a monorepo with the following components:
-
 ```
 worshipbridge/
-├── bridge/           # Local bridge application (Electron)
-├── cloud/           # Cloud backend (Express.js)
-├── web/             # Web dashboard (Next.js)
-└── shared/          # Shared code and types
+├── bridge/           # Electron tray app and bridge server
+├── cloud/           # Express.js backend with AWS integration
+├── web/             # Next.js web dashboard
+└── shared/          # Shared TypeScript types and utilities
 ```
-
-### Components
-
-- **Bridge**: Electron-based tray application that connects to ProPresenter
-- **Cloud**: Express.js backend with AWS integration
-- **Web**: Next.js web dashboard for remote control
-- **Shared**: Common code, types, and utilities
 
 ## Prerequisites
 
 - Node.js 18+
+- npm or yarn
 - AWS Account
 - ProPresenter 7
-- macOS or Windows development environment
+- macOS (for local bridge)
 
 ## Development Setup
 
-1. Clone the repository:
+1. Install dependencies:
    ```bash
-   git clone https://github.com/yourusername/worshipbridge.git
-   cd worshipbridge
+   # Install all dependencies (root and components)
+   npm run install:all
+
+   # Or install components individually
+   npm run install:bridge
+   npm run install:cloud
+   npm run install:web
+   npm run install:shared
    ```
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Set up environment variables:
-   ```bash
-   # Bridge
-   cp bridge/.env.example bridge/.env
-   
-   # Cloud
-   cp cloud/.env.example cloud/.env
-   
-   # Web
-   cp web/.env.example web/.env
-   ```
-
-4. Start development servers:
+2. Start development servers:
    ```bash
    # Start all components
    npm run dev
-   
-   # Or start individual components
-   npm run dev --workspace=bridge
-   npm run dev --workspace=cloud
-   npm run dev --workspace=web
+
+   # Or start components individually
+   npm run dev:bridge
+   npm run dev:cloud
+   npm run dev:web
    ```
 
-## Building
+## Available Scripts
 
-Build all components:
-```bash
-npm run build
-```
+### Installation
+- `npm run install:all` - Install all dependencies (root and components)
+- `npm run install:components` - Install all component dependencies
+- `npm run install:bridge` - Install bridge dependencies
+- `npm run install:cloud` - Install cloud dependencies
+- `npm run install:web` - Install web dependencies
+- `npm run install:shared` - Install shared package dependencies
 
-Or build individual components:
-```bash
-npm run build --workspace=bridge
-npm run build --workspace=cloud
-npm run build --workspace=web
-```
+### Building
+- `npm run build` - Build all components (shared package first)
+- `npm run build:components` - Build all main components
+- `npm run build:bridge` - Build bridge component
+- `npm run build:cloud` - Build cloud component
+- `npm run build:web` - Build web component
+- `npm run build:shared` - Build shared package
 
-## Testing
+### Development
+- `npm run dev` - Start all components in development mode
+- `npm run dev:bridge` - Start bridge in development mode
+- `npm run dev:cloud` - Start cloud in development mode
+- `npm run dev:web` - Start web in development mode
 
-Run tests for all components:
-```bash
-npm run test
-```
+### Testing
+- `npm run test` - Run tests for all components
+- `npm run test:components` - Run tests for all main components
+- `npm run test:bridge` - Run bridge tests
+- `npm run test:cloud` - Run cloud tests
+- `npm run test:web` - Run web tests
+- `npm run test:shared` - Run shared package tests
 
-Or test individual components:
-```bash
-npm run test --workspace=bridge
-npm run test --workspace=cloud
-npm run test --workspace=web
-```
+### Linting
+- `npm run lint` - Lint all components
+- `npm run lint:components` - Lint all main components
+- `npm run lint:bridge` - Lint bridge component
+- `npm run lint:cloud` - Lint cloud component
+- `npm run lint:web` - Lint web component
+- `npm run lint:shared` - Lint shared package
+
+### Cleaning
+- `npm run clean` - Clean all components
+- `npm run clean:components` - Clean all main components
+- `npm run clean:bridge` - Clean bridge component
+- `npm run clean:cloud` - Clean cloud component
+- `npm run clean:web` - Clean web component
+- `npm run clean:shared` - Clean shared package
+
+### Maintenance
+- `npm run reset` - Clean all components and node_modules, then reinstall everything
 
 ## Shared Package
 
-The `shared` package contains common code used across all components:
-
-- **Types**: Common TypeScript interfaces and types
-- **Utils**: Shared utility functions
-- **Constants**: Application-wide constants
-
-To use the shared package in a component:
-
-```typescript
-import { User, Playlist, formatFileSize } from '@worshipbridge/shared';
-```
+The `shared` package contains common TypeScript interfaces, utilities, and constants used across all components. It is installed as a local dependency in each component.
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Install dependencies: `npm install`
+3. Install dependencies using `npm run install:all`
 4. Make your changes
-5. Run tests: `npm run test`
+5. Run tests using `npm run test`
 6. Submit a pull request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+MIT 

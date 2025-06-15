@@ -9,6 +9,15 @@ Common code, types, and utilities shared across WorshipBridge components.
 - Application-wide constants
 - Type-safe API responses
 
+## Installation
+
+The shared package is installed as a local dependency in each component:
+
+```bash
+# In bridge, cloud, or web directory
+npm install ../shared
+```
+
 ## Usage
 
 Import from the shared package in any component:
@@ -104,6 +113,8 @@ When adding new shared code:
 4. Export new items in `src/index.ts`
 5. Add tests for new functionality
 6. Update this documentation
+7. Rebuild the package
+8. Update the dependent components
 
 ## Best Practices
 
@@ -112,4 +123,6 @@ When adding new shared code:
 - Follow consistent naming conventions
 - Document all exported items
 - Write tests for shared code
-- Keep dependencies minimal 
+- Keep dependencies minimal
+- Rebuild shared package after changes
+- Update dependent components after shared package changes 

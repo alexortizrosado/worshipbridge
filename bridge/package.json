@@ -17,7 +17,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@worshipbridge/shared": "workspace:*",
+    "@worshipbridge/shared": "file:../shared",
     "electron-store": "^8.1.0",
     "electron-updater": "^6.1.7",
     "winston": "^3.11.0",
