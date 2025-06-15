@@ -1,0 +1,75 @@
+name: Check Shared Dependencies
+
+on:
+  pull_request:
+    paths:
+      - 'shared/**'
+      - 'bridge/package.json'
+      - 'cloud/package.json'
+      - 'web/package.json'
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+        with:
+          files: |
+            shared/**
+            bridge/package.json
+            cloud/package.json
+            web/package.json
+
+      - name: Check shared version in dependencies
+        run: |
+          # Get the current version from shared/package.json
+          SHARED_VERSION=$(node -p "require('./shared/package.json').version")
+          
+          # Function to check if a package.json has the correct shared version
+          check_shared_version() {
+            local package_json=$1
+            local current_version=$(node -p "require('$package_json').dependencies['@worshipbridge/shared']")
+            
+            if [[ "$current_version" != "file:../shared" ]]; then
+              echo "::error::$package_json is not using the local shared package"
+              exit 1
+            fi
+          }
+          
+          # Check each dependent service
+          if [[ "${{ steps.changed-files.outputs.all_changed_files }}" == *"shared/"* ]]; then
+            echo "Shared package was modified. Checking dependencies..."
+            check_shared_version "./bridge/package.json"
+            check_shared_version "./cloud/package.json"
+            check_shared_version "./web/package.json"
+          fi
+
+      - name: Check for uncommitted changes
+        if: steps.changed-files.outputs.all_changed_files != ''
+        run: |
+          # Function to check if there are uncommitted changes in a directory
+          check_uncommitted_changes() {
+            local dir=$1
+            if [[ -d "$dir" ]]; then
+              git diff --quiet "$dir" || {
+                echo "::error::Uncommitted changes found in $dir"
+                exit 1
+              }
+            fi
+          }
+          
+          # Check each dependent service
+          check_uncommitted_changes "./bridge"
+          check_uncommitted_changes "./cloud"
+          check_uncommitted_changes "./web" 

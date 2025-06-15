@@ -65,7 +65,46 @@ When running in development mode, the services use the following ports:
 - `npm run install:bridge` - Install bridge dependencies
 - `npm run install:cloud` - Install cloud dependencies
 - `npm run install:web` - Install web dependencies
-- `npm run install:shared` - Install shared package dependencies
+
+## Shared Package Management
+
+The `shared` directory contains common code used across all components. To ensure consistency and prevent issues:
+
+1. All components must use the local shared package:
+   ```json
+   {
+     "dependencies": {
+       "@worshipbridge/shared": "file:../shared"
+     }
+   }
+   ```
+
+2. When modifying the shared package:
+   - Update all dependent services to use the new changes
+   - Run tests in all components
+   - Commit changes to all affected components
+
+3. GitHub Actions will automatically:
+   - Check if shared package changes are properly reflected in all components
+   - Verify that all components are using the local shared package
+   - Ensure no uncommitted changes exist in dependent services
+
+### Workflow Rules
+
+1. **Shared Package Changes**:
+   - Must be accompanied by updates in all dependent services
+   - Must maintain backward compatibility when possible
+   - Must include tests for new functionality
+
+2. **Version Management**:
+   - Use semantic versioning for the shared package
+   - Update version numbers when making breaking changes
+   - Document breaking changes in the changelog
+
+3. **Testing Requirements**:
+   - All shared package changes must be tested in all components
+   - CI/CD pipeline will verify changes are properly integrated
+   - Pull requests must pass all dependency checks
 
 ### Building
 - `npm run build` - Build all components (shared package first)
@@ -107,10 +146,6 @@ When running in development mode, the services use the following ports:
 
 ### Maintenance
 - `npm run reset` - Clean all components and node_modules, then reinstall everything
-
-## Shared Package
-
-The `shared` package contains common TypeScript interfaces, utilities, and constants used across all components. It is installed as a local dependency in each component.
 
 ## Contributing
 
