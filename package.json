@@ -1,0 +1,21 @@
+{
+  "name": "worshipbridge",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "bridge",
+    "cloud",
+    "web",
+    "shared"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "clean": "npm run clean --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "dev": "concurrently \"npm run dev --workspace=bridge\" \"npm run dev --workspace=cloud\" \"npm run dev --workspace=web\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+} 

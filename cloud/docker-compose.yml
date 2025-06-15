@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - AWS_REGION=us-east-1
+      - S3_ENDPOINT=http://minio:9000
+      - S3_BUCKET_NAME=worshipbridge-media
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - RABBITMQ_QUEUE=worshipbridge-commands
+      - JWT_SECRET=your-jwt-secret-key
+    depends_on:
+      - minio
+      - rabbitmq
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  minio_data:
+  rabbitmq_data: 

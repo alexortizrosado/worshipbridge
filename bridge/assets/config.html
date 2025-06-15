@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WorshipBridge Configuration</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      margin: 0 0 20px;
+      font-size: 24px;
+      color: #333;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #666;
+    }
+    
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .checkbox-group input[type="checkbox"] {
+      margin-right: 8px;
+    }
+    
+    button {
+      background-color: #007AFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    .status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 4px;
+      display: none;
+    }
+    
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      display: block;
+    }
+    
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WorshipBridge Configuration</h1>
+    
+    <form id="configForm">
+      <div class="form-group">
+        <label for="apiKey">API Key</label>
+        <input type="text" id="apiKey" name="apiKey" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="userId">User ID</label>
+        <input type="text" id="userId" name="userId" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="cloudApiUrl">Cloud API URL</label>
+        <input type="text" id="cloudApiUrl" name="cloudApiUrl" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="propresenterPort">ProPresenter WebSocket Port</label>
+        <input type="number" id="propresenterPort" name="propresenterPort" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="pollingInterval">Polling Interval (ms)</label>
+        <input type="number" id="pollingInterval" name="pollingInterval" required>
+      </div>
+      
+      <div class="checkbox-group">
+        <input type="checkbox" id="autoStart" name="autoStart">
+        <label for="autoStart">Auto-start bridge on launch</label>
+      </div>
+      
+      <button type="submit">Save Configuration</button>
+    </form>
+    
+    <div id="status" class="status"></div>
+  </div>
+  
+  <script>
+    const { ipcRenderer } = require('electron');
+    const config = require('../dist/config').getConfig();
+    
+    // Populate form with current config
+    document.getElementById('apiKey').value = config.apiKey;
+    document.getElementById('userId').value = config.userId;
+    document.getElementById('cloudApiUrl').value = config.cloudApiUrl;
+    document.getElementById('propresenterPort').value = config.propresenterPort;
+    document.getElementById('pollingInterval').value = config.pollingInterval;
+    document.getElementById('autoStart').checked = config.autoStart;
+    
+    // Handle form submission
+    document.getElementById('configForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const newConfig = {
+        apiKey: document.getElementById('apiKey').value,
+        userId: document.getElementById('userId').value,
+        cloudApiUrl: document.getElementById('cloudApiUrl').value,
+        propresenterPort: parseInt(document.getElementById('propresenterPort').value),
+        pollingInterval: parseInt(document.getElementById('pollingInterval').value),
+        autoStart: document.getElementById('autoStart').checked
+      };
+      
+      try {
+        require('../dist/config').saveConfig(newConfig);
+        showStatus('Configuration saved successfully!', 'success');
+      } catch (error) {
+        showStatus('Error saving configuration: ' + error.message, 'error');
+      }
+    });
+    
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status ' + type;
+      
+      setTimeout(() => {
+        status.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html> 
